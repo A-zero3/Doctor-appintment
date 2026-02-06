@@ -1,0 +1,201 @@
+/**
+ * CareFirst Medical - Doctor Appointment System
+ * Professional medical theme: calm blues and whites, accessible and responsive.
+ */
+
+:root {
+  --color-bg: #f8fafc;
+  --color-text: #1e293b;
+  --color-muted: #64748b;
+  --color-primary: #0ea5e9;
+  --color-primary-dark: #0284c7;
+  --color-accent: #0c4a6e;
+  --color-success: #059669;
+  --color-danger: #dc2626;
+  --font-heading: 'Libre Baskerville', Georgia, serif;
+  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --spacing-section: 4rem;
+  --transition-fast: 0.2s ease;
+  --nav-height: 56px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  padding-top: var(--nav-height);
+  line-height: 1.6;
+}
+
+.main-content {
+  min-height: calc(100vh - 180px);
+}
+
+/* Navbar: medical blue */
+.navbar {
+  background: linear-gradient(135deg, var(--color-accent) 0%, #075985 100%) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1.35rem;
+}
+
+.nav-link {
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  opacity: 0.9;
+}
+
+/* Typography */
+.section-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* Hero section */
+.hero-section {
+  background: linear-gradient(135deg, #0c4a6e 0%, #075985 50%, #0369a1 100%);
+  position: relative;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.hero-subtitle {
+  font-weight: 400;
+  opacity: 0.95;
+}
+
+/* Doctor cards */
+.doctor-card {
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.doctor-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(14, 165, 233, 0.15) !important;
+}
+
+.doctor-card-img-wrapper {
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+}
+
+.doctor-card-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-fast);
+}
+
+.doctor-card:hover .doctor-card-img-wrapper img {
+  transform: scale(1.05);
+}
+
+.doctor-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+/* Footer */
+.footer {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #cbd5e1;
+}
+
+.footer-link {
+  color: #94a3b8;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  color: #fff;
+}
+
+/* Forms */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 0.2rem rgba(14, 165, 233, 0.25);
+}
+
+.invalid-feedback {
+  display: block;
+}
+
+/* Time slot buttons (booking) */
+.time-slot-btn.active {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+/* Alerts */
+.alert-success {
+  background-color: #d1fae5;
+  border-color: #a7f3d0;
+  color: #065f46;
+}
+
+.alert-danger {
+  background-color: #fee2e2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Cards */
+.card {
+  border-radius: 0.5rem;
+}
+
+/* Table (doctor dashboard) */
+.table-hover tbody tr:hover {
+  background-color: rgba(14, 165, 233, 0.08);
+}
+
+/* Accessibility: focus visible */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

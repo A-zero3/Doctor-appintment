@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Book Appointment – CareFirst Medical{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="section-title mb-4">Book an Appointment</h1>
+    <p class="text-muted mb-4">Select a doctor, date, and time that work for you.</p>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <form method="post" id="book-appointment-form" novalidate>
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.doctor_id.label(class="form-label") }}
+                    {{ form.doctor_id(class="form-select") }}
+                    {% if form.doctor_id.errors %}
+                    <div class="invalid-feedback d-block">{{ form.doctor_id.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Appointment Date</label>
+                    <input type="date" id="appointment_date" name="appointment_date" class="form-control" min="{{ min_date }}" value="{{ form.appointment_date.data.strftime('%Y-%m-%d') if form.appointment_date.data else '' }}">
+                    {% if form.appointment_date.errors %}
+                    <div class="invalid-feedback d-block">{{ form.appointment_date.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3" id="time-slots-wrapper" style="display: none;">
+                    <label class="form-label">Available Time Slots</label>
+                    <div id="time-slots-container" class="d-flex flex-wrap gap-2"></div>
+                    <input type="hidden" name="appointment_time" id="appointment_time" value="">
+                    <div id="time-slots-error" class="invalid-feedback d-block" style="display: none;">Please select a date first.</div>
+                </div>
+                <div class="mb-3">
+                    {{ form.reason_for_visit.label(class="form-label") }}
+                    {{ form.reason_for_visit(class="form-control", rows=4, placeholder="Briefly describe your reason for the visit") }}
+                    {% if form.reason_for_visit.errors %}
+                    <div class="invalid-feedback d-block">{{ form.reason_for_visit.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                {{ form.submit(class="btn btn-primary btn-lg") }}
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+(function() {
+  var minDate = '{{ min_date }}';
+  if (!minDate) {
+    var d = new Date();
+    d.setDate(d.getDate() + 1);
+    minDate = d.toISOString().split('T')[0];
+  }
+  document.querySelector('#appointment_date').setAttribute('min', minDate);
+
+  var doctorSelect = document.querySelector('select[name="doctor_id"]');
+  var dateInput = document.querySelector('#appointment_date');
+  var timeContainer = document.getElementById('time-slots-container');
+  var timeHidden = document.getElementById('appointment_time');
+  var timeWrapper = document.getElementById('time-slots-wrapper');
+  var timeError = document.getElementById('time-slots-error');
+
+  function loadSlots() {
+    var doctorId = parseInt(doctorSelect.value, 10);
+    var dateVal = dateInput.value;
+    if (!doctorId || doctorId === 0 || !dateVal) {
+      timeWrapper.style.display = 'none';
+      timeHidden.value = '';
+      return;
+    }
+    timeContainer.innerHTML = '<span class="text-muted">Loading...</span>';
+    timeWrapper.style.display = 'block';
+    timeHidden.value = '';
+    $.get('/api/doctors/' + doctorId + '/available-slots?date=' + dateVal, function(data) {
+      timeContainer.innerHTML = '';
+      if (data.slots && data.slots.length) {
+        data.slots.forEach(function(slot) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'btn btn-outline-primary time-slot-btn';
+          btn.textContent = slot;
+          btn.dataset.time = slot;
+          btn.addEventListener('click', function() {
+            document.querySelectorAll('.time-slot-btn').forEach(function(b) { b.classList.remove('active'); });
+            this.classList.add('active');
+            timeHidden.value = slot;
+            timeError.style.display = 'none';
+          });
+          timeContainer.appendChild(btn);
+        });
+      } else {
+        timeContainer.innerHTML = '<span class="text-muted">No slots available for this date.</span>';
+      }
+    }).fail(function() {
+      timeContainer.innerHTML = '<span class="text-danger">Could not load slots.</span>';
+    });
+  }
+
+  doctorSelect.addEventListener('change', loadSlots);
+  dateInput.addEventListener('change', loadSlots);
+
+  // Preselect date if form had errors
+  if (dateInput.value) loadSlots();
+})();
+</script>
+{% endblock %}

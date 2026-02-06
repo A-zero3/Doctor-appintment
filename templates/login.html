@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Login / Register – CareFirst Medical{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <ul class="nav nav-tabs mb-4" id="authTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {% if active_tab == 'login' %}active{% endif %}" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-pane" type="button" role="tab">Login</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {% if active_tab == 'register' %}active{% endif %}" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-pane" type="button" role="tab">Register</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="authTabContent">
+                <div class="tab-pane fade {% if active_tab == 'login' %}show active{% endif %}" id="login-pane" role="tabpanel">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h5 class="card-title mb-4">Sign In</h5>
+                            <form method="post" action="{{ url_for('login') }}" id="login-form" novalidate>
+                                {{ form.hidden_tag() }}
+                                <input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
+                                <div class="mb-3">
+                                    {{ form.username.label(class="form-label") }}
+                                    {{ form.username(class="form-control", placeholder="Username") }}
+                                    {% if form.username.errors %}<div class="invalid-feedback d-block">{{ form.username.errors[0] }}</div>{% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form.password.label(class="form-label") }}
+                                    {{ form.password(class="form-control", placeholder="Password") }}
+                                    {% if form.password.errors %}<div class="invalid-feedback d-block">{{ form.password.errors[0] }}</div>{% endif %}
+                                </div>
+                                <div class="mb-3 form-check">
+                                    {{ form.remember_me(class="form-check-input") }}
+                                    {{ form.remember_me.label(class="form-check-label") }}
+                                </div>
+                                {{ form.submit(class="btn btn-primary w-100") }}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade {% if active_tab == 'register' %}show active{% endif %}" id="register-pane" role="tabpanel">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h5 class="card-title mb-4">Create Account</h5>
+                            {% set reg_form = register_form if register_form is defined else none %}
+                            {% if reg_form %}
+                            <form method="post" action="{{ url_for('register') }}" id="register-form" novalidate>
+                                {{ reg_form.hidden_tag() }}
+                                <div class="mb-3">
+                                    {{ reg_form.username.label(class="form-label") }}
+                                    {{ reg_form.username(class="form-control", placeholder="Username") }}
+                                    {% if reg_form.username.errors %}<div class="invalid-feedback d-block">{{ reg_form.username.errors[0] }}</div>{% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    {{ reg_form.email.label(class="form-label") }}
+                                    {{ reg_form.email(class="form-control", placeholder="Email") }}
+                                    {% if reg_form.email.errors %}<div class="invalid-feedback d-block">{{ reg_form.email.errors[0] }}</div>{% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    {{ reg_form.full_name.label(class="form-label") }}
+                                    {{ reg_form.full_name(class="form-control", placeholder="Full name") }}
+                                    {% if reg_form.full_name.errors %}<div class="invalid-feedback d-block">{{ reg_form.full_name.errors[0] }}</div>{% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    {{ reg_form.phone_number.label(class="form-label") }}
+                                    {{ reg_form.phone_number(class="form-control", placeholder="Phone (optional)") }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ reg_form.date_of_birth.label(class="form-label") }}
+                                    {{ reg_form.date_of_birth(class="form-control", type="date") }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ reg_form.user_role.label(class="form-label") }}
+                                    {{ reg_form.user_role(class="form-select") }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ reg_form.password.label(class="form-label") }}
+                                    {{ reg_form.password(class="form-control", placeholder="At least 8 characters") }}
+                                    {% if reg_form.password.errors %}<div class="invalid-feedback d-block">{{ reg_form.password.errors[0] }}</div>{% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    {{ reg_form.confirm_password.label(class="form-label") }}
+                                    {{ reg_form.confirm_password(class="form-control", placeholder="Confirm password") }}
+                                    {% if reg_form.confirm_password.errors %}<div class="invalid-feedback d-block">{{ reg_form.confirm_password.errors[0] }}</div>{% endif %}
+                                </div>
+                                {{ reg_form.submit(class="btn btn-primary w-100") }}
+                            </form>
+                            {% else %}
+                            <p class="text-muted">To register, use the Register tab above or <a href="{{ url_for('register') }}">go to the registration page</a>.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

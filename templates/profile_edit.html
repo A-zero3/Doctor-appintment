@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile – CareFirst Medical{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="section-title mb-4">Edit Profile</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form method="post" id="profile-edit-form" novalidate>
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.full_name.label(class="form-label") }}
+                            {{ form.full_name(class="form-control") }}
+                            {% if form.full_name.errors %}<div class="invalid-feedback d-block">{{ form.full_name.errors[0] }}</div>{% endif %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.email.label(class="form-label") }}
+                            {{ form.email(class="form-control") }}
+                            {% if form.email.errors %}<div class="invalid-feedback d-block">{{ form.email.errors[0] }}</div>{% endif %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.phone_number.label(class="form-label") }}
+                            {{ form.phone_number(class="form-control", placeholder="Optional") }}
+                        </div>
+                        {{ form.submit(class="btn btn-primary") }}
+                        <a href="{{ url_for('patient_dashboard') if current_user.user_role == 'patient' else url_for('doctor_dashboard') }}" class="btn btn-outline-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

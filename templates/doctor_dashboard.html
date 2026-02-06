@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Doctor Dashboard – CareFirst Medical{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="section-title mb-4">Doctor Dashboard</h1>
+    <p class="text-muted mb-4">Welcome, Dr. {{ current_user.full_name or current_user.username }}. Manage your appointments.</p>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="text-primary">{{ count_week }}</h3>
+                    <p class="text-muted mb-0">Appointments this week</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="text-primary">{{ count_month }}</h3>
+                    <p class="text-muted mb-0">Appointments this month</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Your Appointments (Pending / Confirmed)</h5>
+        </div>
+        <div class="card-body">
+            {% if appointments %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Patient</th>
+                            <th>Contact</th>
+                            <th>Reason</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for apt in appointments %}
+                        <tr>
+                            <td>{{ apt.appointment_date.strftime('%b %d, %Y') }}</td>
+                            <td>{{ apt.appointment_time }}</td>
+                            <td>{{ apt.patient_user.full_name or apt.patient_user.username }}</td>
+                            <td><small>{{ apt.patient_user.email }}{% if apt.patient_user.phone_number %} · {{ apt.patient_user.phone_number }}{% endif %}</small></td>
+                            <td><small>{{ apt.reason_for_visit[:50] }}{% if apt.reason_for_visit|length > 50 %}...{% endif %}</small></td>
+                            <td>
+                                <a href="{{ url_for('appointment_notes', appointment_id=apt.appointment_id) }}" class="btn btn-outline-primary btn-sm">Notes</a>
+                                <form method="post" action="{{ url_for('complete_appointment', appointment_id=apt.appointment_id) }}" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-outline-success btn-sm">Complete</button>
+                                </form>
+                                <form method="post" action="{{ url_for('cancel_appointment', appointment_id=apt.appointment_id) }}" class="d-inline" onsubmit="return confirm('Cancel this appointment?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Cancel</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">No upcoming appointments.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a href="{{ url_for('profile_edit') }}" class="btn btn-outline-secondary">Edit My Profile</a>
+    </div>
+</div>
+{% endblock %}

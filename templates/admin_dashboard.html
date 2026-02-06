@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard — Photography Portfolio{% endblock %}
+
+{% block content %}
+<section class="py-5 mt-5">
+    <div class="container">
+        <h1 class="section-title mb-4">Admin Dashboard</h1>
+
+        <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="photos-tab" data-bs-toggle="tab" data-bs-target="#photos" type="button" role="tab">Photos</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts" type="button" role="tab">Contact Submissions</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="adminTabsContent">
+            <div class="tab-pane fade show active" id="photos" role="tabpanel">
+                <p><a href="{{ url_for('admin_upload') }}" class="btn btn-dark mb-3">Upload New Photo</a></p>
+                <div class="row g-3">
+                    {% for photo in photos %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <img src="{{ url_for('static', filename='uploads/' + photo.image_filename) }}" alt="{{ photo.title }}" class="card-img-top img-fluid admin-thumb" style="height: 200px; object-fit: cover;" onerror="this.src='https://picsum.photos/400/200?random={{ photo.photo_id }}';">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ photo.title }}</h6>
+                                {% if photo.category %}<span class="badge bg-secondary">{{ photo.category }}</span>{% endif %}
+                                <p class="small text-muted mb-2">Views: {{ photo.view_count or 0 }}</p>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ url_for('photo_detail', photo_id=photo.photo_id) }}" class="btn btn-sm btn-outline-dark">View</a>
+                                    <a href="{{ url_for('admin_edit_photo', photo_id=photo.photo_id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <form action="{{ url_for('admin_delete_photo', photo_id=photo.photo_id) }}" method="post" class="d-inline" onsubmit="return confirm('Delete this photo?');">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="col-12 text-muted">No photos yet. <a href="{{ url_for('admin_upload') }}">Upload your first photo</a>.</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="contacts" role="tabpanel">
+                <div class="list-group">
+                    {% for sub in submissions %}
+                    <div class="list-group-item {{ 'list-group-item-secondary' if sub.read else '' }}">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ sub.subject }}</h6>
+                            <small>{{ sub.submitted_at.strftime('%b %d, %Y %H:%M') if sub.submitted_at else '' }}{% if not sub.read %} <span class="badge bg-primary">New</span>{% endif %}</small>
+                        </div>
+                        <p class="mb-1"><strong>{{ sub.name }}</strong> &lt;{{ sub.email }}&gt;</p>
+                        <p class="mb-1">{{ sub.message }}</p>
+                        {% if not sub.read %}
+                        <form action="{{ url_for('admin_mark_contact_read', submission_id=sub.id) }}" method="post" class="d-inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">Mark as read</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No contact submissions yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h3 class="h5 mb-2">Comments</h3>
+            <p class="text-muted small">To delete inappropriate comments, go to the <a href="{{ url_for('gallery') }}">Gallery</a>, open a photo, and use the "Delete" button next to each comment.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

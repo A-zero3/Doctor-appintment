@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}CareFirst Medical – Your Health, Our Priority{% endblock %}
+
+{% block content %}
+<!-- Hero section -->
+<section class="hero-section py-5">
+    <div class="container hero-content py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-7 text-white">
+                <h1 class="hero-title display-4 fw-bold mb-3">Your Health, Our Priority</h1>
+                <p class="hero-subtitle lead mb-4">Book appointments with experienced doctors online. Quality care, convenient scheduling, and a team you can trust.</p>
+                <a href="{{ url_for('book_appointment') if current_user.is_authenticated and current_user.user_role == 'patient' else url_for('doctors') }}" class="btn btn-light btn-lg me-2">Book an Appointment</a>
+                <a href="{{ url_for('doctors') }}" class="btn btn-outline-light btn-lg">Meet Our Doctors</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Intro / values -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title text-center mb-4">Why Choose CareFirst Medical</h2>
+        <p class="text-center text-muted mx-auto" style="max-width: 700px;">We are committed to providing compassionate, comprehensive care for you and your family. Our team of board-certified physicians and staff work together to ensure your visit is comfortable and effective.</p>
+        <div class="row g-4 mt-3">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3 fs-2 text-primary">&#10003;</div>
+                        <h5 class="card-title">Easy Online Booking</h5>
+                        <p class="card-text text-muted">Schedule your appointment at your convenience, 24/7.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3 fs-2 text-primary">&#9829;</div>
+                        <h5 class="card-title">Experienced Team</h5>
+                        <p class="card-text text-muted">Our doctors bring years of expertise and a personal touch.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3 fs-2 text-primary">&#128197;</div>
+                        <h5 class="card-title">Flexible Scheduling</h5>
+                        <p class="card-text text-muted">Choose from multiple time slots that fit your day.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-6 col-md-3">
+                <h3 class="text-primary fw-bold mb-0">15+</h3>
+                <p class="text-muted mb-0">Years of Service</p>
+            </div>
+            <div class="col-6 col-md-3">
+                <h3 class="text-primary fw-bold mb-0">{{ featured|length if featured else 4 }}</h3>
+                <p class="text-muted mb-0">Specialist Doctors</p>
+            </div>
+            <div class="col-6 col-md-3">
+                <h3 class="text-primary fw-bold mb-0">1000+</h3>
+                <p class="text-muted mb-0">Patients Served</p>
+            </div>
+            <div class="col-6 col-md-3">
+                <h3 class="text-primary fw-bold mb-0">4</h3>
+                <p class="text-muted mb-0">Specializations</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured doctors -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title text-center mb-4">Our Doctors</h2>
+        <p class="text-center text-muted mb-4">Meet some of our experienced medical professionals.</p>
+        <div class="row g-4">
+            {% for doctor in featured %}
+            <div class="col-md-6 col-lg-3">
+                <div class="card doctor-card h-100 border-0 shadow-sm">
+                    <div class="doctor-card-img-wrapper">
+                        {% if doctor.profile_image_filename %}
+                        <img src="{{ url_for('static', filename='uploads/' + doctor.profile_image_filename) }}" class="card-img-top" alt="{{ doctor.user.full_name }}">
+                        {% else %}
+                        <div class="doctor-placeholder d-flex align-items-center justify-content-center">
+                            <span class="display-4 text-white">MD</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Dr. {{ doctor.user.full_name or doctor.user.username }}</h5>
+                        <p class="card-text text-primary small mb-1">{{ doctor.specialization }}</p>
+                        <p class="card-text small text-muted">{{ doctor.years_of_experience or 0 }} years experience</p>
+                        <a href="{{ url_for('doctors') }}?specialization={{ doctor.specialization }}" class="btn btn-outline-primary btn-sm">View Profile</a>
+                        {% if current_user.is_authenticated and current_user.user_role == 'patient' %}
+                        <a href="{{ url_for('book_appointment', doctor_id=doctor.doctor_id) }}" class="btn btn-primary btn-sm">Book</a>
+                        {% elif not current_user.is_authenticated %}
+                        <a href="{{ url_for('login', next=url_for('book_appointment', doctor_id=doctor.doctor_id)) }}" class="btn btn-primary btn-sm">Book</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('doctors') }}" class="btn btn-primary">View All Doctors</a>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="mb-3">Ready to Book Your Appointment?</h2>
+        <p class="lead mb-4">Take the first step toward better health today.</p>
+        <a href="{{ url_for('doctors') }}" class="btn btn-light btn-lg">Find a Doctor</a>
+    </div>
+</section>
+{% endblock %}

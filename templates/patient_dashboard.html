@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard – CareFirst Medical{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="section-title mb-4">My Dashboard</h1>
+    <p class="text-muted mb-4">Welcome, {{ current_user.full_name or current_user.username }}. Manage your appointments and profile.</p>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Upcoming Appointments</h5>
+                </div>
+                <div class="card-body">
+                    {% if upcoming %}
+                    <div class="list-group list-group-flush">
+                        {% for apt in upcoming %}
+                        <div class="list-group-item d-flex justify-content-between align-items-start flex-wrap">
+                            <div class="ms-2 me-auto">
+                                <strong>Dr. {{ apt.doctor.user.full_name or apt.doctor.user.username }}</strong> – {{ apt.doctor.specialization }}<br>
+                                <small class="text-muted">{{ apt.appointment_date.strftime('%A, %B %d, %Y') }} at {{ apt.appointment_time }}</small><br>
+                                <small>Reason: {{ apt.reason_for_visit[:80] }}{% if apt.reason_for_visit|length > 80 %}...{% endif %}</small>
+                            </div>
+                            <form method="post" action="{{ url_for('cancel_appointment', appointment_id=apt.appointment_id) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">Cancel</button>
+                            </form>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted mb-0">You have no upcoming appointments. <a href="{{ url_for('book_appointment') }}">Book one now</a>.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Past Appointments</h5>
+                </div>
+                <div class="card-body">
+                    {% if past %}
+                    <div class="list-group list-group-flush">
+                        {% for apt in past %}
+                        <div class="list-group-item">
+                            <strong>Dr. {{ apt.doctor.user.full_name or apt.doctor.user.username }}</strong> – {{ apt.doctor.specialization }}<br>
+                            <small class="text-muted">{{ apt.appointment_date.strftime('%A, %B %d, %Y') }} at {{ apt.appointment_time }} – {{ apt.status }}</small>
+                            {% if apt.notes %}
+                            <br><small class="text-muted">Doctor notes: {{ apt.notes[:100] }}{% if apt.notes|length > 100 %}...{% endif %}</small>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted mb-0">No past appointments.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Profile</h5>
+                    <p class="mb-1"><strong>{{ current_user.full_name or current_user.username }}</strong></p>
+                    <p class="small text-muted mb-1">{{ current_user.email }}</p>
+                    {% if current_user.phone_number %}<p class="small text-muted mb-1">{{ current_user.phone_number }}</p>{% endif %}
+                    <a href="{{ url_for('profile_edit') }}" class="btn btn-outline-primary btn-sm">Edit Profile</a>
+                </div>
+            </div>
+            <a href="{{ url_for('book_appointment') }}" class="btn btn-primary w-100">Book New Appointment</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

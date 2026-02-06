@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Our Doctors – CareFirst Medical{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="section-title mb-4">Our Medical Team</h1>
+    <p class="text-muted mb-4">Browse our doctors and find the right specialist for your needs.</p>
+
+    <!-- Search and filter -->
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+            <input type="text" name="q" class="form-control" placeholder="Search by name or specialization" value="{{ search_q or '' }}">
+        </div>
+        <div class="col-md-4">
+            <select name="specialization" class="form-select">
+                <option value="">All specializations</option>
+                {% for spec in specializations %}
+                <option value="{{ spec }}" {% if current_spec == spec %}selected{% endif %}>{{ spec }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Filter</button>
+        </div>
+    </form>
+
+    <div class="row g-4">
+        {% for doctor in doctors_list %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card doctor-card h-100 border-0 shadow-sm">
+                <div class="doctor-card-img-wrapper">
+                    {% if doctor.profile_image_filename %}
+                    <img src="{{ url_for('static', filename='uploads/' + doctor.profile_image_filename) }}" class="card-img-top" alt="{{ doctor.user.full_name }}">
+                    {% else %}
+                    <div class="doctor-placeholder d-flex align-items-center justify-content-center">
+                        <span class="display-4 text-white">MD</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Dr. {{ doctor.user.full_name or doctor.user.username }}</h5>
+                    <p class="card-text text-primary mb-1">{{ doctor.specialization }}</p>
+                    <p class="card-text small text-muted">{{ doctor.years_of_experience or 0 }} years experience</p>
+                    {% if doctor.consultation_fee %}
+                    <p class="card-text small">Consultation: ${{ "%.2f"|format(doctor.consultation_fee) }}</p>
+                    {% endif %}
+                    <p class="card-text small">{{ (doctor.about_text or '')[:120] }}{% if doctor.about_text and doctor.about_text|length > 120 %}...{% endif %}</p>
+                    {% if current_user.is_authenticated and current_user.user_role == 'patient' %}
+                    <a href="{{ url_for('book_appointment', doctor_id=doctor.doctor_id) }}" class="btn btn-primary">Book Appointment</a>
+                    {% else %}
+                    <a href="{{ url_for('login', next=url_for('book_appointment', doctor_id=doctor.doctor_id)) }}" class="btn btn-primary">Book Appointment</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <p class="text-muted">No doctors found. Try adjusting your search or filter.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
