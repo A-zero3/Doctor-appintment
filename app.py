@@ -6,6 +6,7 @@ import os
 import uuid
 from datetime import datetime, date, timedelta
 from functools import wraps
+from flask_wtf.csrf import CSRFProtect
 from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
@@ -22,10 +23,14 @@ app.config.from_object(Config)
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
+
 db.init_app(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message = 'Please log in to access this page.'
+
+# Add this line:
+csrf = CSRFProtect(app)
 
 
 def allowed_file(filename):
