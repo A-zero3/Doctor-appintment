@@ -79,10 +79,10 @@ After the first run, you can log in with:
 | Role    | Username   | Password    |
 |---------|------------|-------------|
 | Patient | `patient`  | `patient123` |
-| Doctor  | `dr_smith` | `doctor123`  |
-| Doctor  | `dr_jones` | `doctor123`  |
-| Doctor  | `dr_williams` | `doctor123` |
-| Doctor  | `dr_brown` | `doctor123`  |
+| Doctor  | `Anil Shrestha` | `doctor123`  |
+| Doctor  | `Sameer Shrestha` | `doctor123`  |
+| Doctor  | `Biraj Shrestha` | `doctor123` |
+| Doctor  | `Digdarshan Khadka` | `doctor123`  |
 
 - **Patient**: Book appointments, view/cancel upcoming, view past appointments and notes, edit profile.
 - **Doctor**: View appointments, add notes, mark complete, cancel, see weekly/monthly counts.

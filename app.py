@@ -533,16 +533,16 @@ def init_db_and_seed():
             return
         # Create doctor users and their Doctor profiles
         specializations_data = [
-            ('dr_smith', 'Dr. Sarah Smith', 'Cardiology', 'MD, FACC', 15, 150.00,
+            ('dr_Anil Shrestha', 'Dr. Anil Shrestha', 'Cardiology', 'MD, FACC', 15, 150.00,
              'Mon,Tue,Wed,Thu', '09:00,10:00,11:00,14:00,15:00',
              'Board-certified cardiologist with expertise in preventive care and heart disease management.'),
-            ('dr_jones', 'Dr. Michael Jones', 'Dermatology', 'MD, FAAD', 10, 120.00,
+            ('dr_Sameer Shrestha', 'Dr. Sameer Shrestha', 'Dermatology', 'MD, FAAD', 10, 120.00,
              'Mon,Wed,Fri', '09:00,10:00,11:00',
              'Specializing in medical and cosmetic dermatology. Committed to skin health for all ages.'),
-            ('dr_williams', 'Dr. Emily Williams', 'Pediatrics', 'MD, FAAP', 12, 100.00,
+            ('dr_Biraj Shrestha', 'Dr. Biraj Shrestha', 'Pediatrics', 'MD, FAAP', 12, 100.00,
              'Tue,Thu,Fri', '08:00,09:00,10:00,11:00,14:00',
              'Caring for children from birth through adolescence. Focus on preventive care and family support.'),
-            ('dr_brown', 'Dr. James Brown', 'General Practice', 'MD, Family Medicine', 20, 90.00,
+            ('dr_DigDarshan Khadka', 'Dr. DigDarshan Khadka', 'General Practice', 'MD, Family Medicine', 20, 90.00,
              'Mon,Tue,Wed,Thu,Fri', '08:00,09:00,10:00,11:00,14:00,15:00',
              'Experienced family physician providing comprehensive care for all ages.'),
         ]
